@@ -10,13 +10,14 @@ def process_data(year, league):
     if mu.mutex_process(filename):
         scores_data = dl.download_scores(year, league)
         nb_scores = scores_data.shape[0]
-        x_data = np.zeros(shape=(nb_scores, 20, 8+15))
+        x_data = np.zeros(shape=(nb_scores, 20, 8+6+15))
         y_data = np.zeros(shape=(nb_scores, 1))
         x_data[:, :, :] = np.nan
         y_data[:, :] = np.nan
         curr_score = 0
         current_season = -1
         classement = pd.DataFrame(columns=["team", "points", "win", "draw", "lost", "matchs", "BP", "BC", "DB"]+
+                                          ["h_win", "h_draw", "h_lost", "h_BP", "h_BC", "h_DB"]+
                                           [str("m")+str(k)+str(t) for k in range(1, 6) for t in ["team", "loc", "res"]])
         for i in range(0, nb_scores):
             gameline = scores_data.iloc[i, :]
@@ -48,11 +49,11 @@ def process_data(year, league):
             clhome = classement.loc[classement.team == hometeam, :]
             if clhome.empty:
                 classement.loc[classement.shape[0]] = [hometeam] + \
-                                                      [0 for gg in range(0, 8)] + [np.nan for gg in range(0, 15)]
+                                                      [0 for gg in range(0, 8+6)] + [np.nan for gg in range(0, 15)]
             claway = classement.loc[classement.team == awayteam, :]
             if claway.empty:
                 classement.loc[classement.shape[0]] = [awayteam] + \
-                                                      [0 for gg in range(0, 8)] + [np.nan for gg in range(0, 15)]
+                                                      [0 for gg in range(0, 8+6)] + [np.nan for gg in range(0, 15)]
 
             # update rank
             home_res = -1
@@ -64,6 +65,9 @@ def process_data(year, league):
                     classement.loc[classement.team == hometeam, "win"] + 1
                 classement.loc[classement.team == awayteam, "lost"] = \
                     classement.loc[classement.team == awayteam, "lost"] + 1
+                classement.loc[classement.team == hometeam, "h_win"] = \
+                    classement.loc[classement.team == hometeam, "h_win"] + 1
+
             elif gameline.FTHG == gameline.FTAG:
                 home_res = 1
                 away_res = 1
@@ -71,6 +75,8 @@ def process_data(year, league):
                     classement.loc[classement.team == hometeam, "draw"] + 1
                 classement.loc[classement.team == awayteam, "draw"] = \
                     classement.loc[classement.team == awayteam, "draw"] + 1
+                classement.loc[classement.team == hometeam, "h_draw"] = \
+                    classement.loc[classement.team == hometeam, "h_draw"] + 1
             else:
                 home_res = 2
                 away_res = 0
@@ -78,6 +84,8 @@ def process_data(year, league):
                     classement.loc[classement.team == hometeam, "lost"] + 1
                 classement.loc[classement.team == awayteam, "win"] = \
                     classement.loc[classement.team == awayteam, "win"] + 1
+                classement.loc[classement.team == hometeam, "h_lost"] = \
+                    classement.loc[classement.team == hometeam, "h_lost"] + 1
             classement.loc[classement.team == hometeam, "BP"] = \
                 classement.loc[classement.team == hometeam, "BP"] + gameline.FTHG
             classement.loc[classement.team == hometeam, "BC"] = \
@@ -86,7 +94,10 @@ def process_data(year, league):
                 classement.loc[classement.team == awayteam, "BP"] + gameline.FTAG
             classement.loc[classement.team == awayteam, "BC"] = \
                 classement.loc[classement.team == awayteam, "BC"] + gameline.FTHG
-
+            classement.loc[classement.team == hometeam, "h_BP"] = \
+                classement.loc[classement.team == hometeam, "h_BP"] + gameline.FTHG
+            classement.loc[classement.team == hometeam, "h_BC"] = \
+                classement.loc[classement.team == hometeam, "h_BC"] + gameline.FTAG
             if current_season < 1994:
                 classement.points = classement.win * 2 + classement.draw
             else:
@@ -140,7 +151,7 @@ def process_data(year, league):
 
 def aggr_data(dict_leagues):
     nb_seasons = sum(len(v) for v in dict_leagues.values())
-    x_aggr_data = np.empty([nb_seasons*500, 20, 8+15])
+    x_aggr_data = np.empty([nb_seasons*500, 20, 8+6+15])
     y_aggr_data = np.empty([nb_seasons*500, 1])
     x_aggr_data[:, :, :] = np.nan
     y_aggr_data[:, :] = np.nan
@@ -160,7 +171,7 @@ def aggr_data(dict_leagues):
 
 
 def get_training_data():
-    train_data = aggr_data({'F1': range(2002, 2020), 'E0': range(1995, 2021), 'SP1': range(2000, 2021)})
+    train_data = aggr_data({'F1': range(2002, 2020), 'E0': range(1995, 2021), 'SP1': range(2000, 2021), 'I1': range(2004, 2021)})
     test_data = aggr_data({'F1': range(2020, 2021)})
     tdata = {'x_train': train_data['x_data'], 'y_train': train_data['y_data'],
              'x_test': test_data['x_data'], 'y_test': test_data['y_data']}

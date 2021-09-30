@@ -30,13 +30,13 @@ def plot_scores():
 
 def plot_accuracy():
     acc_traces = mod2.get_model()[1]
-    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
     fig.suptitle('Horizontally stacked subplots')
     ax1.plot(acc_traces['nb_epochs'], acc_traces['accuracy_train'])
     ax1.plot(acc_traces['nb_epochs'], acc_traces['accuracy_test'])
     ax2.plot(acc_traces['nb_epochs'], acc_traces['loss_train'])
     ax2.plot(acc_traces['nb_epochs'], acc_traces['loss_test'])
-
+    ax3.plot(acc_traces['nb_epochs'], acc_traces['tain_on_test'])
 
 #plot_scores()
 plot_accuracy()
