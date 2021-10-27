@@ -85,18 +85,18 @@ def train_model(nb_epochs=0, on_test=False):
 
 def model_predict():
     model_y = get_model()[0]
-    train_data = td2.process_data(2020, 'F1')
+    train_data = td2.process_data(2021, 'F1')
     classement = train_data['ranking_state']
-    matches = np.array([[ "Angers",  "Lille"],
-                        [ "Brest", "Paris SG"],
-                        [ "Lens", "Monaco"],
-                        [ "Lyon", "Nice"],
-                        [ "Metz", "Marseille"],
-                        [ "Nantes", "Montpellier" ],
-                        [ "Reims", "Bordeaux"],
-                        [ "Rennes", "Nimes"],
-                        [ "St Etienne", "Dijon"],
-                        [ "Strasbourg", "Lorient"]])
+    matches = np.array([[ "St Etienne",  "Angers"],
+                        [ "Nantes", "Clermont"],
+                        [ "Lille", "Brest"],
+                        [ "Nice", "Lyon"],
+                        [ "Lens", "Metz"],
+                        [ "Lorient", "Bordeaux"],
+                        [ "Reims", "Troyes" ],
+                        [ "Rennes", "Strasbourg"],
+                        [ "Monaco", "Montpellier"],
+                        [ "Marseille", "Paris SG"]])
     home_teams = matches[:, 0]
     away_teams = matches[:, 1]
     x_predict = np.zeros(shape=(1, 20, 8+6+15))

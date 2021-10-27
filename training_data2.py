@@ -141,6 +141,7 @@ def process_data(year, league):
             classement = classement.reset_index(drop=True)
 
         index_data = np.where(np.isnan(x_data[:, 0, 0]))[0][0]
+
         x_data = x_data[range(index_data), :, :]
         y_data = y_data[range(index_data), :]
         tdata = {'x_data': x_data, 'y_data': y_data,
@@ -171,8 +172,8 @@ def aggr_data(dict_leagues):
 
 
 def get_training_data():
-    train_data = aggr_data({'F1': range(2002, 2020), 'E0': range(1995, 2021), 'SP1': range(2000, 2021), 'I1': range(2004, 2021)})
-    test_data = aggr_data({'F1': range(2020, 2021)})
+    train_data = aggr_data({'F1': range(2002, 2021), 'E0': range(1995, 2022), 'SP1': range(2000, 2022), 'I1': range(2004, 2022)})
+    test_data = aggr_data({'F1': range(2021, 2022)})
     tdata = {'x_train': train_data['x_data'], 'y_train': train_data['y_data'],
              'x_test': test_data['x_data'], 'y_test': test_data['y_data']}
     return tdata

@@ -2,11 +2,14 @@ import model2 as mod2
 import download as dl
 import training_data2 as td2
 
-curr = td2.process_data(2020, "F1")
+curr = td2.process_data(2021, "F1")
+
+curr['x_data'].shape
+
 curr['ranking_state']
 tdata = td2.get_training_data()
 
-conf = mod2.train_model(0)
+conf = mod2.train_model(10)
 conf
 print(conf)
 
